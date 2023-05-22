@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import liteweb.config.Config;
 import liteweb.http.Request;
 import liteweb.http.Response;
 import org.apache.logging.log4j.LogManager;
@@ -17,8 +18,10 @@ import org.apache.logging.log4j.Logger;
 
 public class Server {
     private static final Logger log = LogManager.getLogger(Server.class);
+    private static final Config CONFIG = new Config("/config.properties");
     private static final int DEFAULT_PORT = 8080;
-    private static final ExecutorService EXEC = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+    private static final int THREADS = CONFIG.getInt("app.threads");
+    private static final ExecutorService EXEC = Executors.newFixedThreadPool(THREADS);
 
     public static void main(String[] args) throws IOException {
         new Server().startListen(getValidPortParam(args));
@@ -26,7 +29,7 @@ public class Server {
 
     public void startListen(int port) throws IOException {
         try (ServerSocket socket = new ServerSocket(port)) {
-            log.info("Web server listening on port {} (press CTRL-C to quit)", port);
+            log.info("Web server listening on port {} using {} threads (press CTRL-C to quit)", port, THREADS);
             //noinspection InfiniteLoopStatement
             while (true) {
                 Thread.onSpinWait();
