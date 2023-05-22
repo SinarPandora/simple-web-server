@@ -42,16 +42,16 @@ test {
 }
 
 jacoco {
-    toolVersion '0.8.0'
+    toolVersion '0.8.10'
 }
 
 tasks.withType(Test).configureEach {
     jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
 }
 
 
 tasks.create(name: "testCoverage", type: JacocoReport, dependsOn: "test") {
-
     group = "Reporting"
     description = "Generate Jacoco coverage reports for the test build."
 
@@ -71,7 +71,6 @@ tasks.create(name: "testCoverage", type: JacocoReport, dependsOn: "test") {
 
     sourceDirectories.from = files([
             "$project.projectDir/src/main/java",
-
     ])
 
     executionData.from = files("${project.buildDir}/jacoco/test.exec")
