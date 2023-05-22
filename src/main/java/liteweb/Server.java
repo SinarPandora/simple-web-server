@@ -22,7 +22,6 @@ public class Server {
     }
 
     public void startListen(int port) throws IOException {
-
         try (ServerSocket socket = new ServerSocket(port)) {
             log.info("Web server listening on port %d (press CTRL-C to quit)", port);
             //noinspection InfiniteLoopStatement
