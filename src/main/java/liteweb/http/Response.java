@@ -26,7 +26,6 @@ public class Response {
                 break;
             case GET:
                 try {
-                    // TODO fix dir bug http://localhost:8080/src/test
                     String uri = req.getUri();
                     File file = new File("." + uri);
                     if (file.isDirectory()) {
@@ -63,10 +62,9 @@ public class Response {
         result.append(uri);
         result.append("</h1><hr><pre>");
 
-        // TODO add Parent Directory
         File[] files = file.listFiles();
         for (File subFile : Objects.requireNonNull(files)) {
-            result.append(" <a href=\"")
+            result.append(" <a href=\"/")
                     .append(subFile.getPath())
                     .append("\">")
                     .append(subFile.getPath())
