@@ -17,7 +17,7 @@ public class Server {
     private static final Logger log = LogManager.getLogger(Server.class);
     private static final int DEFAULT_PORT = 8080;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         new Server().startListen(getValidPortParam(args));
     }
 
