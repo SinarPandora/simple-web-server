@@ -9,18 +9,14 @@ import java.util.List;
 
 /**
  * Request class parses the HTTP Request Line (method, URI, version)
- * and Headers http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html
+ * and Headers <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html">rfc2616-sec5</a>
  */
+@SuppressWarnings("unused")
 public class Request {
-
 	private static final Logger logger = LogManager.getLogger(Request.class);
-
     private final List<String> headers = new ArrayList<>();
-
     private Method method;
-
     private String uri;
-
     private String version;
 
     public Method getMethod() {
@@ -42,7 +38,6 @@ public class Request {
         }
     }
 
-
     private void parseRequestLine(String str) {
 		logger.info("request line:", str);
         String[] split = str.split("\\s+");
@@ -57,5 +52,9 @@ public class Request {
 
     private void addToHeader(String str) {
         headers.add(str);
+    }
+
+    public String getVersion() {
+        return version;
     }
 }

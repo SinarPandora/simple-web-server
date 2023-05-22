@@ -1,39 +1,29 @@
 package liteweb.http;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * ContentType enum uses the file extension to loosely map the available content type based on common media types:
- * http://en.wikipedia.org/wiki/Internet_media_type
+ * <a href="http://en.wikipedia.org/wiki/Internet_media_type">Internet_media_type</a>
  */
 final class ContentType {
-	private static final Map<String, String> EXTENSION_MAP;
+    private static final Map<String, String> EXTENSION_MAP = Map.of(
+            "CSS", "Content-Type: text/css",
+            "GIF", "Content-Type: image/gif",
+            "HTM", "Content-Type: text/html",
+            "HTML", "Content-Type: text/html",
+            "ICO", "Content-Type: image/x-icon",
+            "JPG", "Content-Type: image/jpeg",
+            "JPEG", "Content-Type: image/jpeg",
+            "PNG", "Content-Type: image/png",
+            "XML", "Content-type: text/xml");
 
-	static {
-		Map<String, String> extensions = new HashMap<>();
-		extensions.put("CSS", "Content-Type: text/css");
-		extensions.put("GIF", "Content-Type: image/gif");
-		extensions.put("HTM","Content-Type: text/html");
-		extensions.put("HTML", "Content-Type: text/html");
-		extensions.put("ICO", "Content-Type: image/x-icon");
-		extensions.put("JPG","Content-Type: image/jpeg");
-		extensions.put("JPEG", "Content-Type: image/jpeg");
-		extensions.put("PNG", "Content-Type: image/png");
-		extensions.put("XML", "Content-type: text/xml");
+    private ContentType() {
+    }
 
-		EXTENSION_MAP = Collections.unmodifiableMap(new HashMap<>());
-	}
-	private ContentType() {
-
-	}
-	static String of(String extension) {
-		String defined = EXTENSION_MAP.get(extension.toUpperCase());
-		if (defined != null) {
-			return defined;
-		} else {
-			return "Content-Type: text/html";
-		}
-	}
+    static String of(String extension) {
+        String defined = EXTENSION_MAP.get(extension.toUpperCase());
+        return Objects.requireNonNullElse(defined, "Content-Type: text/html");
+    }
 }

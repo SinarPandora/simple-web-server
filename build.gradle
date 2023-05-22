@@ -6,15 +6,7 @@ plugins {
 group 'liteweb'
 version '1.0'
 
-sourceCompatibility = 8
-
-repositories {
-
-    maven {
-        url "https://jcenter.bintray.com"
-    }
-
-}
+sourceCompatibility = 11
 
 tasks.withType(Test) {
     useJUnitPlatform()

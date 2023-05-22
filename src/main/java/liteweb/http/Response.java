@@ -4,17 +4,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Response {
-
     private static final Logger log = LogManager.getLogger(Response.class);
-
     public static final String VERSION = "HTTP/1.0";
-
     private final List<String> headers = new ArrayList<>();
-
     private byte[] body;
 
     public List<String> getHeaders() {
@@ -22,7 +20,6 @@ public class Response {
     }
 
     public Response(Request req) {
-
         switch (req.getMethod()) {
             case HEAD:
                 fillHeaders(Status._200);
@@ -68,8 +65,12 @@ public class Response {
 
         // TODO add Parent Directory
         File[] files = file.listFiles();
-        for (File subFile : files) {
-            result.append(" <a href=\"" + subFile.getPath() + "\">" + subFile.getPath() + "</a>\n");
+        for (File subFile : Objects.requireNonNull(files)) {
+            result.append(" <a href=\"")
+                    .append(subFile.getPath())
+                    .append("\">")
+                    .append(subFile.getPath())
+                    .append("</a>\n");
         }
         result.append("<hr></pre></body></html>");
         fillResponse(result.toString());
@@ -78,7 +79,7 @@ public class Response {
     private byte[] getBytes(File file) throws IOException {
         int length = (int) file.length();
         byte[] array = new byte[length];
-        try (InputStream in = new FileInputStream(file)) {
+        try (InputStream in = Files.newInputStream(file.toPath())) {
             int offset = 0;
             while (offset < length) {
                 int count = in.read(array, offset, (length - offset));

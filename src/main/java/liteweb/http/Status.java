@@ -2,7 +2,7 @@ package liteweb.http;
 
 /**
  * Status enum maps the HTTP/1.1 available response status codes 
- * http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html
+ * <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html">rfc2616-sec6</a>
  */
 public enum Status {
 	_100("100 Continue"), //
