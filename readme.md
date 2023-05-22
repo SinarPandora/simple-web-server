@@ -13,17 +13,16 @@ purposes based on W3C specifications (http://www.w3.org/Protocols/):
 * [RFC 6265](http://tools.ietf.org/html/rfc6265) HTTP State Management Mechanism (Cookies)
 
 ## Build
-```
+```bash
 ./gradlew jar 
 ```
 
 ## Run
-```
+```bash
 java -cp build/libs/simple-web-server-1.0.jar liteweb.Server
 ```
 
 ## Performance test
-```
+```bash
 bzt performance.yml
 ```
-
