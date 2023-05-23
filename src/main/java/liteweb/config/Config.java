@@ -25,4 +25,8 @@ public final class Config {
     public Integer getInt(String key) {
         return ((Integer) CACHE.computeIfAbsent(key, k -> Integer.parseInt(PROPERTIES.getProperty(k))));
     }
+
+    public Boolean getBool(String key) {
+        return ((Boolean) CACHE.computeIfAbsent(key, k -> Boolean.parseBoolean(PROPERTIES.getProperty(k))));
+    }
 }
