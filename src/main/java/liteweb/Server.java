@@ -35,15 +35,18 @@ public class Server {
             //noinspection InfiniteLoopStatement
             while (true) {
                 Thread.onSpinWait();
-                handle(socket);
+                handle(socket, EXEC);
             }
         }
     }
 
-    private static void handle(ServerSocket socket) {
+    // Visible for testing
+    // SuppressWarnings for testing
+    @SuppressWarnings("SameParameterValue")
+    static void handle(ServerSocket socket, ExecutorService exec) {
         try {
             final Socket clientSocket = socket.accept();
-            EXEC.execute(() -> {
+            exec.execute(() -> {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
                     try {
                         List<String> requestContent = new ArrayList<>();
