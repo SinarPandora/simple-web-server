@@ -21,7 +21,9 @@ public class Server {
     private static final Config CONFIG = new Config("/config.properties");
     private static final int DEFAULT_PORT = 8080;
     private static final int THREADS = CONFIG.getInt("app.threads");
-    private static final ExecutorService EXEC = Executors.newFixedThreadPool(THREADS);
+    private static final ExecutorService EXEC = CONFIG.getBool("app.virtual_thread.enabled")
+            ? Executors.newVirtualThreadPerTaskExecutor()
+            : Executors.newFixedThreadPool(THREADS);
 
     public static void main(String[] args) throws IOException {
         new Server().startListen(getValidPortParam(args));
@@ -29,7 +31,7 @@ public class Server {
 
     public void startListen(int port) throws IOException {
         try (ServerSocket socket = new ServerSocket(port)) {
-            log.info("Web server listening on port {} using {} threads (press CTRL-C to quit)", port, THREADS);
+            log.info("Web server listening on port {} using {} (press CTRL-C to quit)", port, EXEC.getClass().getSimpleName());
             //noinspection InfiniteLoopStatement
             while (true) {
                 Thread.onSpinWait();
