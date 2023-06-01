@@ -3,7 +3,6 @@ package liteweb;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mockito;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -14,9 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 class ServerTest {
 
@@ -35,13 +31,26 @@ class ServerTest {
     }
 
     @Test
+    @SuppressWarnings("resource")
     void shouldHandleSocket() throws IOException, InterruptedException {
-        ServerSocket serverSocket = Mockito.mock(ServerSocket.class);
-        Socket clientSocket = Mockito.mock(Socket.class);
-        given(serverSocket.accept()).willReturn(clientSocket);
-        given(clientSocket.getInputStream()).willReturn(new ByteArrayInputStream("HEAD / HTTP/1.1\n\n".getBytes()));
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        given(clientSocket.getOutputStream()).willReturn(output);
+        Socket clientSocket = new Socket() {
+            @Override
+            public InputStream getInputStream() throws IOException {
+                return new ByteArrayInputStream("HEAD / HTTP/1.1\n\n".getBytes());
+            }
+
+            @Override
+            public OutputStream getOutputStream() throws IOException {
+                return output;
+            }
+        };
+        ServerSocket serverSocket = new ServerSocket() {
+            @Override
+            public Socket accept() throws IOException {
+                return clientSocket;
+            }
+        };
         ExecutorService exec = Executors.newSingleThreadExecutor();
 
         Server.handle(serverSocket, exec);
