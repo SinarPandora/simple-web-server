@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Server {
     private static final Logger log = LogManager.getLogger(Server.class);
-    private static final Config CONFIG = new Config("/config.properties");
+    public static final Config CONFIG = new Config("/config.properties");
     private static final int DEFAULT_PORT = 8080;
     private static final int THREADS = CONFIG.getInt("app.threads");
     private static final ExecutorService EXEC = CONFIG.getBool("app.virtual_thread.enabled")

@@ -1,5 +1,6 @@
 package liteweb.http;
 
+import liteweb.streaming.FileServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -75,16 +76,7 @@ public class Response {
     }
 
     private byte[] getBytes(File file) throws IOException {
-        int length = (int) file.length();
-        byte[] array = new byte[length];
-        try (InputStream in = Files.newInputStream(file.toPath())) {
-            int offset = 0;
-            while (offset < length) {
-                int count = in.read(array, offset, (length - offset));
-                offset += count;
-            }
-        }
-        return array;
+        return FileServer.serve(file);
     }
 
     private void fillHeaders(Status status) {
