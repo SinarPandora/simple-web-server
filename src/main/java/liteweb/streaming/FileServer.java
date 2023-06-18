@@ -2,6 +2,8 @@ package liteweb.streaming;
 
 import liteweb.Server;
 import liteweb.cache.LRUCache;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,7 @@ public class FileServer {
     private FileServer() {
     }
 
+    private static final Logger log = LogManager.getLogger(FileServer.class);
     private static final LRUCache<String, FileInfo> CACHE = new LRUCache<>(Server.CONFIG.getInt("app.cache_size"));
     private static final int FILE_SIZE_LIMIT = Server.CONFIG.getInt("app.cache_file_size_in_mb");
     private static final int BYTE_TO_MB = 1024 * 1024;
@@ -29,8 +32,10 @@ public class FileServer {
             long lastModified = file.lastModified();
             Optional<FileInfo> cache = CACHE.get(path);
             if (cache.isPresent() && cache.get().lastModified() == lastModified) {
+                log.debug("Cache hit");
                 result = cache.get().bytes();
             } else {
+                log.debug("Cache renew");
                 result = getBytes(file);
                 CACHE.put(path, FileInfo.of(result, lastModified));
             }

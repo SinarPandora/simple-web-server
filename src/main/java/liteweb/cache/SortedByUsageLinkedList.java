@@ -20,10 +20,18 @@ public class SortedByUsageLinkedList<T> {
     public boolean isEmpty() {
         lock.readLock().lock();
         try {
-            return this.head == null && this.tail == null;
+            return this.head.isEmpty() && this.tail.isEmpty();
         } finally {
             lock.readLock().unlock();
         }
+    }
+
+    public Node<T> getHead() {
+        return head;
+    }
+
+    public Node<T> getTail() {
+        return tail;
     }
 
     public Node<T> addToFront(@NotNull T value) {

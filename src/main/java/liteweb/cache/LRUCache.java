@@ -40,7 +40,7 @@ public class LRUCache<K, V> {
             if (valueMap.containsKey(key)) {
                 newNode = valueStore.updateToFront(valueMap.get(key), newValue);
             } else {
-                if (this.size() > this.limit) {
+                if (this.size() >= this.limit) {
                     evictOldest();
                 }
                 newNode = valueStore.addToFront(newValue);
@@ -64,27 +64,45 @@ public class LRUCache<K, V> {
         }
     }
 
-    public void evictIfExist(@NotNull K key) {
-        if (!valueMap.containsKey(key)) return;
+    public Optional<V> evictIfExist(@NotNull K key) {
+        if (!valueMap.containsKey(key)) return Optional.empty();
         lock.writeLock().lock();
         try {
             Node<Map.Entry<K, V>> cache = valueMap.remove(key);
             valueStore.detach(cache);
+            return Optional.of(cache.getValue().getValue());
         } finally {
             lock.writeLock().unlock();
         }
     }
 
-    private boolean evictOldest() {
+    private void evictOldest() {
         lock.writeLock().lock();
         try {
             Node<Map.Entry<K, V>> oldest = valueStore.removeOldest();
             if (!oldest.isEmpty()) {
                 valueMap.remove(oldest.getValue().getKey());
-                return true;
-            } else return false;
+            }
         } finally {
             lock.writeLock().unlock();
+        }
+    }
+
+    public Map.Entry<K, V> getLatestValue() {
+        lock.readLock().lock();
+        try {
+            return valueStore.getHead().getValue();
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public Map.Entry<K, V> getOldestValue() {
+        lock.readLock().lock();
+        try {
+            return valueStore.getTail().getValue();
+        } finally {
+            lock.readLock().unlock();
         }
     }
 
