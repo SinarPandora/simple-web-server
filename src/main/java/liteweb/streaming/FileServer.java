@@ -4,6 +4,7 @@ import liteweb.Server;
 import liteweb.cache.LRUCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +51,8 @@ public class FileServer {
         return 1.0 * file.length() / BYTE_TO_MB <= FILE_SIZE_LIMIT;
     }
 
-    private static byte[] getBytes(File file) throws IOException {
+    @VisibleForTesting
+    public static byte[] getBytes(File file) throws IOException {
         int length = (int) file.length();
         byte[] array = new byte[length];
         try (InputStream in = Files.newInputStream(file.toPath())) {
