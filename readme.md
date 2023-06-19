@@ -31,6 +31,16 @@ java -cp build/libs/simple-web-server-1.0.jar liteweb.Server
 bzt performance.yml
 ```
 
+## Changes
+
+### LRU Cache
+
+* liteweb/cache/Node.java
+* liteweb/cache/EmptyNode.java
+* liteweb/cache/SortedByUsageLinkedList.java
+* liteweb/cache/LRUCache.java
+* liteweb/streaming/FileServer.java
+
 ## Testing results
 
 ### Summary
