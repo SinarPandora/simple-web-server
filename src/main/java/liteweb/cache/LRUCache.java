@@ -1,12 +1,12 @@
 package liteweb.cache;
 
+import liteweb.concurrency.UnFairLock;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * LRU Cache
@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 2023/6/18 17:22
  */
 public class LRUCache<K, V> {
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final UnFairLock lock = new UnFairLock();
     private final Map<K, Node<Map.Entry<K, V>>> valueMap = new HashMap<>();
     private final SortedByUsageLinkedList<Map.Entry<K, V>> valueStore = new SortedByUsageLinkedList<>();
     private final int limit;
@@ -33,7 +33,7 @@ public class LRUCache<K, V> {
 
     public void put(@NotNull K key, @Nullable V value) {
         if (value == null) return;
-        lock.writeLock().lock();
+        lock.lock();
         try {
             Map.Entry<K, V> newValue = Map.entry(key, value);
             Node<Map.Entry<K, V>> newNode;
@@ -47,12 +47,12 @@ public class LRUCache<K, V> {
             }
             valueMap.put(key, newNode);
         } finally {
-            lock.writeLock().unlock();
+            lock.unlock();
         }
     }
 
     public Optional<V> get(@NotNull K key) {
-        lock.readLock().lock();
+        lock.lock();
         try {
             Node<Map.Entry<K, V>> cache = this.valueMap.get(key);
             if (cache != null && !cache.isEmpty()) {
@@ -60,59 +60,59 @@ public class LRUCache<K, V> {
                 return Optional.of(cache.getValue().getValue());
             } else return Optional.empty();
         } finally {
-            lock.readLock().unlock();
+            lock.unlock();
         }
     }
 
     public Optional<V> evictIfExist(@NotNull K key) {
         if (!valueMap.containsKey(key)) return Optional.empty();
-        lock.writeLock().lock();
+        lock.lock();
         try {
             Node<Map.Entry<K, V>> cache = valueMap.remove(key);
             valueStore.detach(cache);
             return Optional.of(cache.getValue().getValue());
         } finally {
-            lock.writeLock().unlock();
+            lock.unlock();
         }
     }
 
     private void evictOldest() {
-        lock.writeLock().lock();
+        lock.lock();
         try {
             Node<Map.Entry<K, V>> oldest = valueStore.removeOldest();
             if (!oldest.isEmpty()) {
                 valueMap.remove(oldest.getValue().getKey());
             }
         } finally {
-            lock.writeLock().unlock();
+            lock.unlock();
         }
     }
 
     public Map.Entry<K, V> getLatestValue() {
-        lock.readLock().lock();
+        lock.lock();
         try {
             return valueStore.getHead().getValue();
         } finally {
-            lock.readLock().unlock();
+            lock.unlock();
         }
     }
 
     public Map.Entry<K, V> getOldestValue() {
-        lock.readLock().lock();
+        lock.lock();
         try {
             return valueStore.getTail().getValue();
         } finally {
-            lock.readLock().unlock();
+            lock.unlock();
         }
     }
 
     public void cleanAll() {
-        lock.writeLock().lock();
+        lock.lock();
         try {
             valueMap.clear();
             valueStore.clean();
         } finally {
-            lock.writeLock().unlock();
+            lock.unlock();
         }
     }
 }
