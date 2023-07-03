@@ -45,11 +45,7 @@ bzt performance.yml
 
 ### Summary
 
-| Name                     | Concurrency |
-|--------------------------|-------------|
-| Cached 24 Threads (x2)   | 347977      |
-| 24 Threads (x2)          | 317300      |
-| 12 Threads (x1)          | 294167      |
-| Cached 12 Threads (x1)   | 288219      |
-| Virtual Thread (Default) | 286172      |
-| Cached Virtual Thread    | 281412      |
+| Name                       | Concurrency |
+|----------------------------|-------------|
+| Cached 24 Threads (Custom) | 305203      |
+| Cached 24 Threads          | 301033      |
